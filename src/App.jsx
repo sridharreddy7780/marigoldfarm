@@ -10,12 +10,17 @@ import FinalCTA from './components/FinalCTA'
 import Footer from './components/Footer'
 import MobileActionBar from './components/MobileActionBar'
 import useReveal from './utils/useReveal'
-export default function App() {
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
+import CartPage from './components/CartPage'
+import CheckoutPage from './components/CheckoutPage'
+import { OrderStatusPage, PaymentProblemPage } from './components/OrderStatusPage'
+
+function HomePage() {
   useReveal()
   return (
     <>
-      <Header />
-      <main>
+      <main className="home-page">
         <Hero />
         <FlowerSection />
         <FarmStory />
@@ -25,8 +30,27 @@ export default function App() {
         <Location />
         <FinalCTA />
       </main>
-      <Footer />
       <MobileActionBar />
+    </>
+  )
+}
+
+export default function App() {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  return (
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/order-success" element={<OrderStatusPage />} />
+        <Route path="/payment-failed" element={<PaymentProblemPage />} />
+        <Route path="/payment-cancelled" element={<PaymentProblemPage cancelled />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+      <Footer />
     </>
   )
 }
